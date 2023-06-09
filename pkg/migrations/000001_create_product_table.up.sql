@@ -7,3 +7,5 @@ CREATE TABLE IF NOT Exists products (
                           suk VARCHAR NOT NULL,
                           PRIMARY KEY (id)
 );
+
+CREATE INDEX products_search_idx ON products USING GIN (to_tsvector(products.name || products.category || products.suk));
