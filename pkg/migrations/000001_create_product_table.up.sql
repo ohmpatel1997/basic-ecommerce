@@ -4,8 +4,10 @@ CREATE TABLE IF NOT Exists products (
                           id uuid DEFAULT uuid_generate_v4 (),
                           name VARCHAR NOT NULL,
                           category VARCHAR NOT NULL,
-                          suk VARCHAR NOT NULL,
+                          sku VARCHAR NOT NULL,
                           PRIMARY KEY (id)
 );
 
-CREATE INDEX products_search_idx ON products USING GIN (to_tsvector(products.name || products.category || products.suk));
+alter table products add column search tsvector generated always as (to_tsvector('english', products.name || ' ' || products.category || ' ' || products.sku)) stored;
+
+create index products_search_idx on products using GIN(search);

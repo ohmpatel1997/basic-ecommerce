@@ -5,10 +5,10 @@ import (
 )
 
 type Product struct {
-	ID       uuid.UUID `json:"id"`
-	Category string    `json:"category"`
-	Name     string    `json:"name"`
-	SKU      string    `json:"sku"`
+	ID       uuid.UUID `json:"id" pgx:"id"`
+	Category string    `json:"category" pgx:"category"`
+	Name     string    `json:"name" pgx:"name"`
+	SKU      string    `json:"sku" pgx:"sku"`
 }
 
 type CreateProductOpt func(*Product)
