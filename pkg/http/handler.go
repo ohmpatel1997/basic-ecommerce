@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
@@ -50,15 +51,13 @@ func (h *Handler) RegisterRoutes(r chi.Router) http.Handler {
 func (h *Handler) creatProduct(w http.ResponseWriter, r *http.Request) {
 	req := new(CreateProductRequest)
 	if err := req.Decode(r); err != nil {
-		render.Status(r, http.StatusBadRequest)
-		render.JSON(w, r, err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	invite, err := h.productSvc.CreateProduct(r.Context(), req.Name, req.SKU, req.Category)
 	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -69,15 +68,13 @@ func (h *Handler) creatProduct(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) searchProducts(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	if query == "" {
-		render.Status(r, http.StatusBadRequest)
-		render.JSON(w, r, "query is required")
+		http.Error(w, errors.New("invalid query param").Error(), http.StatusInternalServerError)
 		return
 	}
 
 	products, err := h.productSvc.SearchProduct(r.Context(), query, 10)
 	if err != nil {
-		render.Status(r, http.StatusInternalServerError)
-		render.JSON(w, r, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
