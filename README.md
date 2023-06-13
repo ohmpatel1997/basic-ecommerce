@@ -8,7 +8,7 @@
 ## How to run
 
 1. Clone the repository
-2. Run `docker-compose up` in the root directory
+2. Run `docker-compose up --build` in the root directory
 
 The above will start the http server on port 8080. You can access the server at http://localhost:8080
 
