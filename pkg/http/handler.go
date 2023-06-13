@@ -2,7 +2,9 @@ package http
 
 import (
 	"errors"
+	"math"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -72,7 +74,22 @@ func (h *Handler) searchProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	products, err := h.productSvc.SearchProduct(r.Context(), query, 10)
+	limit := r.URL.Query().Get("limit")
+	if len(limit) == 0 {
+		limit = "10"
+	}
+
+	intLimit, err := strconv.ParseInt(limit, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// 5 <= limit <= 50
+	intLimit = int64(math.Max(5, float64(intLimit)))
+	intLimit = int64(math.Min(50, float64(intLimit)))
+
+	products, err := h.productSvc.SearchProduct(r.Context(), query, intLimit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
