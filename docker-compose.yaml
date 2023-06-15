@@ -27,9 +27,21 @@ services:
     depends_on:
       - db
     restart: on-failure
+  react:
+    build:
+      context: ./frontend/randoo
+      dockerfile: ./Dockerfile
+    command: sh -c 'npm start'
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/randoo:/app
+    depends_on:
+      - api
 
 
 volumes:
   rundoo:
   api:
+  frontend:
 

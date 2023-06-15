@@ -9,8 +9,8 @@
 
 1. Clone the repository
 2. Run `docker-compose up --build` in the root directory
+3. go to `http://localhost:300` in your browser, to create and search the product
 
-The above will start the http server on port 8080. You can access the server at http://localhost:8080
 
 ## APIs
 
