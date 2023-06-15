@@ -75,7 +75,7 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
-	log.Println("pcc-server now running on http://localhost:9999")
+	log.Println("server now running on http://localhost:8080")
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

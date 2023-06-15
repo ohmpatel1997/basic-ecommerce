@@ -26,14 +26,7 @@ func NewHandler(productSvc product.ServiceI) *Handler {
 func (h *Handler) RegisterRoutes(r chi.Router) http.Handler {
 	r.Use(middleware.Heartbeat("/ping"))
 
-	cors := cors.New(cors.Options{
-		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Content-Type"},
-		Debug:            false,
-		AllowCredentials: true,
-		MaxAge:           300,
-	})
-
+	cors := cors.AllowAll()
 	r.Use(cors.Handler)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -53,6 +46,12 @@ func (h *Handler) RegisterRoutes(r chi.Router) http.Handler {
 func (h *Handler) creatProduct(w http.ResponseWriter, r *http.Request) {
 	req := new(CreateProductRequest)
 	if err := req.Decode(r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err := req.Validate()
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
